@@ -4,9 +4,10 @@ class GameStats:
     def __init__(self, game):
 
         self.setting = game.setting
-        self.game_active = True
 
         self.reset_stats()
+
+        self.game_active = False
 
     def reset_stats(self):
 

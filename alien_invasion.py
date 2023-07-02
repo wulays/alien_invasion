@@ -6,6 +6,7 @@ from bullet import Bullet
 from alien import Alien
 from time import sleep
 from game_stats import GameStats
+from button import Button
 
 class AlienInvasion:
     '''管理游戏资源和行为'''
@@ -31,6 +32,8 @@ class AlienInvasion:
         self.aliens = pygame.sprite.Group()
 
         self._create_fleet()
+
+        self.play_button = Button(self, 'Play')
 
     def run_game(self):
         '''开始游戏'''
@@ -60,6 +63,22 @@ class AlienInvasion:
 
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_play_button(mouse_pos)
+
+    def _check_play_button(self, mouse_pos):
+        if not self.stats.game_active and self.play_button.rect.collidepoint(mouse_pos):
+
+            self.stats.reset_stats()
+            self.stats.game_active = True
+            pygame.mouse.set_visible(False)
+
+            self.aliens.empty()
+            self.bullets.empty()
+
+            self._create_fleet()
+            self.ship.center_ship()
 
     # 处理键盘按下
     def _check_keydown_events(self, event):
@@ -94,6 +113,9 @@ class AlienInvasion:
             bullet.draw_bullet()
 
         self.aliens.draw(self.screen)
+
+        if not self.stats.game_active:
+            self.play_button.draw_button()
 
         # 让最近绘制的屏幕可见
         pygame.display.flip()
@@ -181,6 +203,7 @@ class AlienInvasion:
             sleep(0.5)
         else:
             self.stats.game_active = False
+            pygame.mouse.set_visible(True)
 
     def _check_aliens_bottom(self):
 
@@ -189,8 +212,7 @@ class AlienInvasion:
             if alien.rect.bottom >= screen_rect.bottom:
                 self._ship_hit()
                 break
-
-
+ 
 if __name__ == '__main__':
     # 创建游戏示例并运行
     game = AlienInvasion()
