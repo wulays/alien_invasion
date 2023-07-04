@@ -1,10 +1,13 @@
 import pygame
+from pygame.sprite import Sprite
 
-class Ship:
+class Ship(Sprite):
     '''宇宙飞船'''
 
     def __init__(self, game):
         '''初始化飞船和飞船位置'''
+
+        super().__init__()
 
         self.setting = game.setting
 
